@@ -9,8 +9,11 @@ test.describe('Checkout workflow', () => {
 
   test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
+
     await loginPage.open();
     await loginPage.login('standard_user', 'secret_sauce');
+
+    await expect(page).toHaveURL(/inventory\.html/);
 
     const productsPage = new ProductsPage(page);
     await productsPage.addProduct('Sauce Labs Backpack');
@@ -19,17 +22,19 @@ test.describe('Checkout workflow', () => {
     const cartPage = new CartPage(page);
     await cartPage.checkout();
 
+    await expect(page).toHaveURL(/checkout-step-one\.html/);
+
     checkoutPage = new CheckoutPage(page);
   });
 
-  test('TC_CHECKOUT_001 - Required customer information is validated', async ({ page }) => {
+  test('TC_CHECKOUT_001 - Empty form shows first name validation', async () => {
     await checkoutPage.continueToOverview();
 
     await expect(checkoutPage.errorMessage)
       .toContainText('First Name is required');
   });
 
-  test('TC_CHECKOUT_002 - Missing last name is validated', async ({ page }) => {
+  test('TC_CHECKOUT_002 - Missing last name is validated', async () => {
     await checkoutPage.enterCustomerInformation('Sk', '', '500001');
     await checkoutPage.continueToOverview();
 
@@ -49,28 +54,41 @@ test.describe('Checkout workflow', () => {
     await checkoutPage.enterCustomerInformation('Sk', 'Tester', '500001');
     await checkoutPage.continueToOverview();
 
-    await expect(page).toHaveURL(/checkout-step-two.html/);
+    await expect(page).toHaveURL(/checkout-step-two\.html/);
     await expect(page.getByText('Checkout: Overview')).toBeVisible();
     await expect(page.getByText('Sauce Labs Backpack')).toBeVisible();
   });
 
+
+
   test('TC_CHECKOUT_005 - Order can be completed successfully', async ({ page }) => {
-    await checkoutPage.enterCustomerInformation('Sk', 'Tester', '500001');
-    await checkoutPage.continueToOverview();
-    await checkoutPage.finishOrder();
+  await checkoutPage.enterCustomerInformation('Sk', 'Tester', '500001');
+  await checkoutPage.continueToOverview();
 
-    await expect(page).toHaveURL(/checkout-complete.html/);
-    await expect(page.getByText('Thank you for your order!')).toBeVisible();
-  });
+  await expect(page).toHaveURL(/checkout-step-two\.html/);
+  await expect(page.getByText('Checkout: Overview')).toBeVisible();
+  await expect(checkoutPage.finishButton).toBeVisible();
 
-  test('TC_CHECKOUT_006 - Completed order shows confirmation', async ({ page }) => {
-    await checkoutPage.enterCustomerInformation('Sk', 'Tester', '500001');
-    await checkoutPage.continueToOverview();
-    await checkoutPage.finishOrder();
+  await checkoutPage.finishOrder();
 
-    await expect(page.getByText('Your order has been dispatched'))
-      .toBeVisible();
-    await expect(page.getByRole('button', { name: 'Back Home' }))
-      .toBeVisible();
-  });
+  await expect(page).toHaveURL(/checkout-complete\.html/);
+  await expect(page.getByText('Thank you for your order!')).toBeVisible();
+});
+
+test('TC_CHECKOUT_006 - Completed order shows confirmation', async ({ page }) => {
+  await checkoutPage.enterCustomerInformation('Sk', 'Tester', '500001');
+  await checkoutPage.continueToOverview();
+
+  await expect(page).toHaveURL(/checkout-step-two\.html/);
+  await expect(checkoutPage.finishButton).toBeVisible();
+
+  await checkoutPage.finishOrder();
+
+  await expect(page.getByText('Your order has been dispatched'))
+    .toBeVisible();
+
+  await expect(page.getByRole('button', { name: 'Back Home' }))
+    .toBeVisible();
+});
+
 });

@@ -25,4 +25,16 @@ export class LoginPage {
     await this.passwordInput.fill(password);
     await this.loginButton.click();
   }
+  async loginSuccessfully(
+  username: string,
+  password: string,
+): Promise<void> {
+  await this.login(username, password);
+
+  await this.page.waitForURL(/inventory\.html/);
+
+  await this.page.locator('.inventory_item').first().waitFor({
+    state: 'visible',
+  });
+}
 }

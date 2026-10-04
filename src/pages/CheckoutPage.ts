@@ -12,12 +12,23 @@ export class CheckoutPage {
 
   constructor(page: Page) {
     this.page = page;
+
     this.firstNameInput = page.getByPlaceholder('First Name');
     this.lastNameInput = page.getByPlaceholder('Last Name');
     this.postalCodeInput = page.getByPlaceholder('Zip/Postal Code');
-    this.continueButton = page.getByRole('button', { name: 'Continue' });
-    this.finishButton = page.getByRole('button', { name: 'Finish' });
-    this.cancelButton = page.getByRole('button', { name: 'Cancel' });
+
+    this.continueButton = page.getByRole('button', {
+      name: 'Continue',
+    });
+
+    this.finishButton = page.getByRole('button', {
+      name: 'Finish',
+    });
+
+    this.cancelButton = page.getByRole('button', {
+      name: 'Cancel',
+    });
+
     this.errorMessage = page.locator('[data-test="error"]');
   }
 
@@ -35,7 +46,14 @@ export class CheckoutPage {
     await this.continueButton.click();
   }
 
-  async finishOrder(): Promise<void> {
-    await this.finishButton.click();
-  }
+ async finishOrder(): Promise<void> {
+await this.page.waitForURL(/checkout-step-two.html/);
+
+await this.finishButton.waitFor({
+state: 'visible',
+timeout: 10000,
+});
+
+await this.finishButton.click();
+}
 }

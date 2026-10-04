@@ -9,10 +9,13 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
 
-  reporter: [
-    ['list'],
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],
-  ],
+ 
+reporter: [
+  ['list'],
+  ['html', { outputFolder: 'playwright-report', open: 'never' }],
+  ['junit', { outputFile: 'test-results/junit.xml' }],
+  ['allure-playwright', { resultsDir: 'allure-results' }],
+],
 
   use: {
     baseURL: 'https://www.saucedemo.com',

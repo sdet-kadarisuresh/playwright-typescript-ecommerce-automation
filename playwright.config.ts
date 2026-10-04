@@ -16,7 +16,7 @@ export default defineConfig({
 
   use: {
     baseURL: 'https://www.saucedemo.com',
-      testIdAttribute: 'data-test', // Add this
+      testIdAttribute: 'data-test',
 
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',

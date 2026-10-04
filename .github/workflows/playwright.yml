@@ -1,4 +1,3 @@
-```yaml
 name: Playwright Tests
 
 on:

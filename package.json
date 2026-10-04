@@ -4,9 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "report:html": "playwright show-report",
-    "report:allure:generate": "allure generate allure-results --clean -o allure-report",
-    "report:allure:open": "allure open allure-report"
+    "test": "playwright test",
+    
+  "test:chromium": "playwright test --project=chromium",
+  "test:firefox": "playwright test --project=firefox",
+  "test:webkit": "playwright test --project=webkit",
+  "test:headed": "playwright test --headed",
+  "test:debug": "playwright test --debug",
+  "test:list": "playwright test --list",
+  "report:html": "playwright show-report",
+  "report:allure:generate": "allure generate allure-results --clean -o allure-report",
+  "report:allure:open": "allure open allure-report",
+  "allure:environment": "node scripts/generate-allure-environment.cjs"
   },
   "keywords": [],
   "author": "",

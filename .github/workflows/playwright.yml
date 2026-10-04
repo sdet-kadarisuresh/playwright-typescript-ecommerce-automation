@@ -47,6 +47,10 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      - name: Generate Allure environment metadata
+        if: always()
+        run: npm run allure:environment
+
       - name: Generate Allure HTML report
         if: always()
         run: npx allure generate allure-results --clean -o allure-report
